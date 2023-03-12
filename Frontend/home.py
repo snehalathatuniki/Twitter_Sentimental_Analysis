@@ -1,13 +1,13 @@
 import sqlite3
-from turtle import pd
 import matplotlib.pyplot as plt
 import streamlit as st 
-import sqlite3
+import altair as alt
+import plotly.express as px 
 import pandas as pd
 
 APP_TITLE = "Mapping and Sentiment Analysis of Geo-spatial Data regarding usage of :orange[Renewable Energy]"
 
-sqliteconnection = sqlite3.connect('D:\jhanvi\JHANVI DOCS\AI&DS SEM1\StepPresentation\SentimentDB.db')
+sqliteconnection = sqlite3.connect('D:\CLG\Loyalist\SEM 1\STEP PRESENTATION\Project - Sentimental Analysis\streamlit\SentimentDB.db')
 
 def formatCountryName(name):
     return str(name).replace("(","").replace(")","").replace(",","").replace("'","")
@@ -80,6 +80,9 @@ def main():
         neutral = st.checkbox("Neutral")
 
         
+
+        
+     
     with col5:
         
         positive = st.checkbox("Positive")
@@ -101,36 +104,30 @@ def main():
         # Equal aspect ratio ensures that pie is drawn as a circle
         ax.axis('equal')
 
-
         # Show the pie chart in Streamlit
-        st.pyplot(fig) 
-
-    with col4:
-        # Connect to the SQLite database
-        conn = sqlite3.connect('example.db')
-
-        # Retrieve data from table
-        data = pd.read_sql('SELECT * FROM my_table', conn)
-
-        # Close connection
-        conn.close()
-
-        # Group the data by a column
-        grouped_data = data.groupby('category')['value'].sum()
-
-        # Create a bar plot
-        fig, ax = plt.subplots()
-        ax.bar(grouped_data.index, grouped_data.values)
-        ax.set_xlabel('Category')
-        ax.set_ylabel('Value')
-        ax.set_title('Bar Graph')
-
-        # Display the plot in Streamlit
         st.pyplot(fig)
-        
-        
 
         
+        # Create a sample dataframe
+        data = pd.DataFrame({
+            'Category': ["Positive","Negative","Neutral"],
+            'No of Tweet': values,
+            'Color': ['#1F77B4', '#FF7F0E', '#2CA02C']
+        })
+
+        # Create the bar chart using Altair
+        bars = alt.Chart(data).mark_bar().encode(
+            x='Category',
+            y='No of Tweet',
+            color=alt.Color('Color', scale=None),
+            tooltip=['Category', 'No of Tweet']
+        ).properties(
+            width=300,
+            height=400
+        )
+
+        # Display the chart in Streamlit
+        st.altair_chart(bars, use_container_width=True)      
 
 
 
